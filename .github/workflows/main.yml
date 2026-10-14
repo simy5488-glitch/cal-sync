@@ -1,0 +1,29 @@
+name: Sincronizzazione Calendario E5
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codice
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Installa librerie
+        run: |
+          pip install pandas openpyxl O365 requests msal
+
+      - name: Esegui Script
+        env:
+          CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          CALENDAR_EMAIL: ${{ secrets.CALENDAR_EMAIL }}
+          DRIVE_FILE_ID: ${{ secrets.DRIVE_FILE_ID }}
+        run: python sync.py
