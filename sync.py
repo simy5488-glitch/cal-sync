@@ -87,12 +87,17 @@ def main():
                     continue
 
                 dt = base + timedelta(days=col_off - 1)
-                utc_hour = start_hour_ita - 2 
+                from zoneinfo import ZoneInfo # Aggiungi questo import in alto nel file
 
-                ev = target_calendar.new_event()
-                ev.subject = mat
-                ev.start = dt.replace(hour=utc_hour, minute=0)
-                ev.end = ev.start + timedelta(hours=duration)
+# ... nel ciclo dove crei l'evento:
+tz_rome = ZoneInfo("Europe/Rome")
+start_dt_ita = datetime(dt.year, dt.month, dt.day, start_hour_ita, 0, tzinfo=tz_rome)
+
+ev = target_calendar.new_event()
+ev.subject = mat
+ev.start = start_dt_ita.astimezone(ZoneInfo("UTC"))
+ev.end = ev.start + timedelta(hours=duration)
+
                 ev.location = "Aula Università"
                 ev.is_reminder_on = False
                 ev.save()
